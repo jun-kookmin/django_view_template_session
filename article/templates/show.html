@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h1>
+        {{ article.title }}
+    </h1>
+
+    <a href="{% url 'article:index' %}">
+        글 목록으로 돌아가기 
+    </a>
+    <div>
+        <h3>
+            작성자 {{ article.author.username }}
+        </h3>
+        <div>
+            <a href="{% url 'article:edit' article.id %}" >
+                글 수정하기    
+            </a>   
+     
+            <a href="{% url 'article:delete' article.id %}">
+                글 삭제하기
+            </a>
+        </div>
+        <hr />
+        <p>
+            {{ article.content }}
+        </p>    
+    </div>  
+{% for comment in comments %}
+        <strong>{{ comment.author.username }}</strong>:{{ comment.content }} <br>
+        <small>{{ comment.created_at }}</small>
+    </div>
+{% empty %}
+    <p>댓글이 아직 없습니다.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+    <form method="POST" action="{% url 'article:create_comment' article.pk %}">
+        {% csrf_token %}
+        <textarea name="content" rows="3" cols="30" placeholder="댓글을 입력하세요"></textarea><br>
+        <button type="submit" class="btn btn-success">댓글 작성</button>
+    </form>
+{% endif %}
+
+</div>  
+{% endblock %}
